@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor .AI | Proyecto Integrador</title>
+    
+    <link rel="icon" href="logo.png" type="image/png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #0f0c29;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --estres: #ff416c; /* Color rosa intenso para el nuevo botón */
+            --text: #ffffff;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--text);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, nav a, .btn-glow { font-family: var(--font-heading); text-align: center; }
+
+        /* --- Header --- */
+        header {
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0.2rem 5%;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 90px;
+        }
+
+        /* LOGO FIJO EN 120PX */
+        .logo-img { 
+            height: 120px; 
+            width: auto; 
+            display: block; 
+            transition: 0.3s; 
+        }
+        .logo-img:hover { transform: scale(1.05); }
+
+        .nav-pulse { flex-grow: 1; height: 30px; margin: 0 40px; overflow: hidden; }
+        .pulse-svg-nav { width: 100%; height: 100%; }
+        .pulse-path-nav { fill: none; stroke: var(--primary); stroke-width: 2; stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: drawPulse 4s linear infinite; opacity: 0.5; }
+
+        nav ul { display: flex; list-style: none; gap: 25px; }
+        nav a { color: white; text-decoration: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Busca y reemplaza esta parte en tu CSS */
+/* 1. Ajuste para todas las secciones */
+section { 
+    padding: 40px 10%; 
+    scroll-margin-top: 110px; /* Esto hace que el salto se detenga 110px antes */
+}
+
+/* 2. Ajuste específico para la sección de Información */
+#Información {
+    scroll-margin-top: 120px; /* Un poquito más de aire para el título */
+}
+
+/* 3. Asegúrate que el body tenga el scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+        /* --- POSTER --- */
+        /* Este fragmento hace que el póster sea el fondo total y se vea nítido */
+.hero-section {
+    position: relative; /* ¡Pilas! Esto es clave para que el video no se escape */
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;    /* Esto "corta" cualquier parte del video que sobre */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 120px;
+}
+
+/* Tienes que aplicar esto específicamente a la etiqueta <video> */
+.hero-section video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Hace que el video llene el espacio sin deformarse */
+    z-index: -1;       /* Lo manda al fondo de todo */
+}
+        .poster-box {
+            width: 100%; max-width: 1200px; height: auto;
+            border-radius: 30px; overflow: hidden;
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 0 60px rgba(0, 210, 255, 0.2);
+            background-color: rgba(0,0,0,0.3);
+        }
+        .poster-box img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* --- Hero --- */
+        .hero { text-align: center; padding: 60px 10%; }
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem); font-weight: 800;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;
+        }
+
+        /* --- Info Cards --- */
+        /* Busca la clase .info-grid y reemplázala por esta */
+.info-grid {
+    display: grid;
+    /* Cambiamos repeat(3, 1fr) a repeat(2, 1fr) para que sean solo 2 columnas */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 30px; /* Un poquito más de espacio entre las dos */
+    margin: 60px 0;
+    text-align: left;
+    width: 100%;
+}
+
+/* Ajustamos las tarjetas para que el texto no las ensanche de más */
+.info-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    padding: 25px; /* Reduje un poco el padding para que respiren mejor */
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    transition: 0.4s;
+    min-width: 0; /* Esto evita que el contenido desborde la columna */
+}
+        .info-card:hover { border-color: var(--primary); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0, 210, 255, 0.1); }
+        .info-card h3 { color: var(--primary); margin-bottom: 20px; font-size: 1.6rem; text-align: left; text-transform: uppercase; }
+        .info-card p { font-size: 1.1rem; line-height: 1.8; opacity: 0.95; font-family: var(--font-body); font-weight: 400; }
+
+        /* --- Galería --- */
+        /* --- Galería Corregida para 4 fotos --- */
+.conclusion-card {
+    grid-column: 1 / span 2; /* Ocupa desde la columna 1 y se extiende por 2 */
+    margin-top: 10px;        /* Un pequeño espacio extra para que respire */
+    text-align: center;      /* Opcional: centra el texto para que se vea más formal */
+}
+.conclusion-card p {
+    text-align: justify;
+}
+.info-card p {
+    text-align: justify;
+}
+
+/* Ajuste para celulares: que vuelva a ocupar solo una columna si la pantalla es pequeña */
+@media (max-width: 768px) {
+    .conclusion-card {
+        grid-column: 1;
+    }
+}
+.galeria-header {
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    margin-bottom: 10px; font-size: 3rem;
+}
+
+/* --- Estilos Generales del Carrusel --- */
+.carrusel-wrapper { 
+    max-width: 900px; 
+    margin: 30px auto; 
+    overflow: hidden; 
+    border-radius: 25px; 
+    border: 1px solid var(--glass-border); 
+}
+
+.carrusel-track { 
+    display: flex; 
+    width: 300%; 
+    transition: transform 1.2s cubic-bezier(0.45, 0, 0.55, 1); 
+}
+
+.carrusel-item { 
+    width: 33.333%; 
+    height: 450px; 
+    position: relative; 
+    overflow: hidden;
+    flex: 0 0 33.333%; 
+    display: flex;          /* Añadido para centrar */
+    align-items: center;    /* Añadido para centrar */
+    justify-content: center; /* Añadido para centrar */
+}
+
+/* --- CARRUSEL 1: Emociones (Se mantiene gigante/lleno) --- */
+#track1 .carrusel-item img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    opacity: 0.8; 
+}
+
+/* --- CARRUSEL 2: Estructura (AJUSTADO para que no se vea gigante) --- */
+#track2 .carrusel-item img { 
+    max-width: 100%; 
+    max-height: 100%;
+    width: auto; 
+    height: auto; 
+    object-fit: contain; /* Esto hace que la imagen quepa enterita sin zoom */
+    opacity: 0.9; 
+}
+
+.carrusel-caption { 
+    position: absolute; 
+    bottom: 0; 
+    width: 100%; 
+    background: linear-gradient(transparent, rgba(0,0,0,0.9)); 
+    padding: 30px; 
+}
+        /* --- Botón MÁS LLAMATIVO --- */
+        /* Busca la clase .btn-glow y reemplázala por esta */
+.btn-glow {
+    /* Hacemos el botón más grande con padding y fuente */
+    padding: 25px 60px; 
+    font-size: 1.5rem; 
+    
+    /* Mantenemos el estilo llamativo */
+    background: linear-gradient(45deg, var(--primary), var(--estres));
+    border: none;
+    border-radius: 60px;
+    color: white;
+    font-weight: 800; /* Texto más grueso */
+    cursor: pointer;
+    transition: 0.4s;
+    text-transform: uppercase;
+    letter-spacing: 3px; /* Espaciado de letras más pro */
+    display: inline-block;
+    text-decoration: none;
+    
+    /* Sombra y brillo más agresivos */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 
+                0 0 20px rgba(0, 210, 255, 0.3);
+    
+    /* Margen para que no pegue con lo de arriba */
+    margin-top: 40px;
+}
+
+.btn-glow:hover { 
+    transform: scale(1.1) translateY(-5px); 
+    /* Brillo extremo al pasar el mouse */
+    box-shadow: 0 0 60px var(--estres), 
+                0 0 30px var(--primary); 
+}
+
+        @keyframes drawPulse { to { stroke-dashoffset: 0; } }
+        footer { padding: 40px; text-align: center; background: rgba(0,0,0,0.3); border-top: 1px solid var(--glass-border); font-size: 0.9rem; }
+        /* Estilos para la nueva sección de video */
+/* Contenedor principal de los videos */
+.video-grid {
+    display: grid;
+    /* Forzamos 3 columnas iguales */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px; /* Espacio entre videos */
+    width: 100%;
+    max-width: 1200px; /* Un poco más ancho para que quepan bien los 3 */
+    margin: 30px auto;
+}
+
+/* Ajuste de cada contenedor de video */
+.video-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 15px; /* Reduje un poco el radio para que no se vea tosco */
+    overflow: hidden;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+}
+
+.video-container video, 
+.video-container iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Opcional: Para que en celulares se pongan uno debajo de otro y no se vean minúsculos */
+@media (max-width: 768px) {
+    .video-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* Contenedor de fondo */
+.background-emojis {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Se queda detrás de todo */
+    overflow: hidden;
+    pointer-events: none; /* No interfiere con los clics */
+}
+
+/* Estilo de los emojis */
+.floating-emoji {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.1; /* Muy bajito para que sea sutil */
+    animation: floatAnimation 15s linear infinite;
+}
+
+/* Animación de movimiento */
+@keyframes floatAnimation {
+    0% {
+        transform: translateY(110vh) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-10vh) rotate(360deg);
+    }
+}
+
+/* Posiciones aleatorias para cada emoji */
+.floating-emoji:nth-child(1) { left: 10%; animation-duration: 18s; }
+.floating-emoji:nth-child(2) { left: 25%; animation-duration: 22s; animation-delay: 2s; }
+.floating-emoji:nth-child(3) { left: 40%; animation-duration: 15s; animation-delay: 5s; }
+.floating-emoji:nth-child(4) { left: 55%; animation-duration: 20s; animation-delay: 1s; }
+.floating-emoji:nth-child(5) { left: 70%; animation-duration: 17s; animation-delay: 3s; }
+.floating-emoji:nth-child(6) { left: 85%; animation-duration: 25s; }
+.floating-emoji:nth-child(7) { left: 15%; animation-duration: 19s; animation-delay: 4s; }
+.floating-emoji:nth-child(8) { left: 65%; animation-duration: 21s; }
+.floating-emoji:nth-child(9) { left: 90%; animation-duration: 16s; animation-delay: 6s; }
+
+/* Contenedor del fondo de pulsos */
+.pulse-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Detrás de los emojis y del contenido */
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    opacity: 0.15; /* Sutil para no distraer */
+}
+
+.pulse-line {
+    width: 100%;
+    height: 100px;
+}
+
+.pulse-path {
+    fill: none;
+    stroke: var(--primary); /* El celeste que usas */
+    stroke-width: 1;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawPulseBackground 5s linear infinite;
+}
+
+/* Animación idéntica a la de tu navegación */
+@keyframes drawPulseBackground {
+    0% { stroke-dashoffset: 1000; }
+    50% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -1000; }
+}
+
+/* Posiciones variadas para que no se vean repetitivas */
+.line-1 { transform: translateY(10vh) scale(1.2); }
+.line-2 { transform: translateY(0) scale(0.8); opacity: 0.5; }
+.line-3 { transform: translateY(-10vh) scale(1.5); }
+
+/* Contenedor para centrar todo */
+.cta-container {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+}
+
+/* Contenedor que separa la sección */
+.super-cta-wrapper {
+    padding: 80px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Caja de cristal con borde de neón */
+.super-cta-box {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--primary);
+    padding: 60px 40px;
+    border-radius: 40px;
+    text-align: center;
+    max-width: 800px;
+    width: 90%;
+    /* Brillo exterior para que resalte del fondo oscuro */
+    box-shadow: 0 0 50px rgba(0, 210, 255, 0.2), inset 0 0 20px rgba(0, 210, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Texto con efecto de brillo metálico */
+.cta-text-v2 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem; /* Más grande */
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    line-height: 1.4;
+}
+
+/* BOTÓN NIVEL DIOS */
+.btn-ultra-glow {
+    position: relative;
+    padding: 30px 80px;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5, #ff416c, #00d2ff);
+    background-size: 300%;
+    border-radius: 100px;
+    z-index: 1;
+    transition: 0.5s;
+    display: inline-block;
+    animation: flowGradient 4s linear infinite, pulseButton 2s infinite;
+}
+
+/* Animación del degradado moviéndose */
+@keyframes flowGradient {
+    0% { background-position: 0%; }
+    100% { background-position: 300%; }
+}
+
+/* Animación de pulso */
+@keyframes pulseButton {
+    0% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
+    50% { transform: scale(1.08); box-shadow: 0 0 60px var(--estres); }
+    100% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
+}
+
+.btn-ultra-glow:hover {
+    transform: scale(1.15) !important;
+    letter-spacing: 5px;
+    filter: brightness(1.2);
+}
+
+/* Destello blanco que pasa por el botón */
+.btn-ultra-glow::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+.btn-ultra-glow:hover::before {
+    left: 150%;
+}
+/* Clase específica para que la conclusión ocupe todo el ancho */
+/* Estilos para Comentarios */
+.comment-form-container {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    padding: 30px;
+    border-radius: 25px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 40px;
+}
+
+.comment-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 12px;
+    color: white;
+    margin-bottom: 15px;
+    font-family: var(--font-body);
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.comment-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    padding: 20px;
+    border-radius: 20px;
+    position: relative;
+}
+
+.comment-card h4 { color: var(--primary); margin-bottom: 5px; }
+
+/* Reacciones tipo WhatsApp */
+.reactions-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 10px;
+}
+
+.reaction-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.reaction-btn:hover { background: var(--primary); transform: scale(1.1); }
+
+.reaction-count { font-weight: bold; margin-left: 5px; }
+.btn-delete {
+    background: rgba(255, 65, 108, 0.2);
+    border: 1px solid var(--estres);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: 0.3s;
+    margin-left: auto; /* Lo empuja a la derecha */
+}
+
+.btn-delete:hover {
+    background: var(--estres);
+    transform: scale(1.05);
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<div class="background-emojis">
+    <span class="floating-emoji">❤️</span>
+    <span class="floating-emoji">🩺</span>
+    <span class="floating-emoji">⚡</span>
+    <span class="floating-emoji">🏥</span>
+    <span class="floating-emoji">🌡️</span>
+    <span class="floating-emoji">💓</span>
+    <span class="floating-emoji">✨</span>
+    <span class="floating-emoji">🍎</span>
+    <span class="floating-emoji">💪</span>
+</div>
+<div class="pulse-background">
+    <svg class="pulse-line line-1" viewBox="0 0 600 40">
+        <path class="pulse-path" d="M0,20 L250,20 L260,5 L270,35 L280,20 L320,20 L330,0 L340,40 L350,20 L600,20" />
+    </svg>
+    <svg class="pulse-line line-2" viewBox="0 0 600 40">
+        <path class="pulse-path" d="M0,20 L250,20 L260,5 L270,35 L280,20 L320,20 L330,0 L340,40 L350,20 L600,20" />
+    </svg>
+    <svg class="pulse-line line-3" viewBox="0 0 600 40">
+        <path class="pulse-path" d="M0,20 L250,20 L260,5 L270,35 L280,20 L320,20 L330,0 L340,40 L350,20 L600,20" />
+    </svg>
+</div>
+    <header>
+        <a href="#logo">
+            <img src="sensor .ai.png" alt="Sensor .AI Logo" class="logo-img">
+        </a>
+        <div class="nav-pulse">
+            <svg class="pulse-svg-nav" viewBox="0 0 600 40">
+                <path class="pulse-path-nav" d="M0,20 L250,20 L260,5 L270,35 L280,20 L320,20 L330,0 L340,40 L350,20 L600,20" />
+            </svg>
+        </div>
+        <nav>
+    <ul>
+        <li><a href="#poster">Inicio</a></li>
+        <li><a href="#Información">Información</a></li>
+        <li><a href="#galeria">Galería</a></li>
+        <li><a href="#Videos">Videos</a></li>
+        <li><a href="#comentarios">Comentarios</a></li>
+    </ul>
+</nav>
+    </header>
+
+    <main>
+<section id="poster" class="hero-section">
+    <video autoplay muted loop playsinline class="video-bg">
+        <source src="poster.mp4" type="video/mp4">
+        Tu navegador no soporta videos.
+    </video>
+    </section>
+        <section id="inicio" class="hero">
+            <h1>Detector de emociones</h1>
+            <p style="text-align: center; opacity: 0.8; letter-spacing: 1px; font-size: 1.2rem;">Detección biométrica avanzada con Sensor .AI</p>
+            
+            <section id="Información" class="hero">
+    <div class="info-grid">
+        <div class="info-card">
+            <h3>Definición</h3>
+            <p>El presente proyecto surge de la necesidad de integrar tecnologías de monitoreo biométrico con interfaces digitales para obtener una lectura precisa del estado fisiológico del usuario mediante sensores especializados y visualización web. <br>Detector de Emociones diseñado para la recolección de datos no invasivos. Se fundamenta en el sensor de pulso KY-039 y el sensor de temperatura MLX90614 para facilitar el análisis preventivo del bienestar.</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Funcionamiento</h3>
+            <p>El sistema utiliza radiación infrarroja y flujo sanguíneo. Es indispensable que el usuario mantenga la posición por 15 segundos para asegurar el equilibrio térmico y la alta precisión de los resultados.</p>
+            <img src="evidencia de funcionamiento.jpeg" alt="Esquema de funcionamiento" style="width: 100%; border-radius: 15px; margin-top: 15px; border: 1px solid var(--glass-border);">
+        </div>
+        <div class="info-card conclusion-card">
+    <h3>Conclusión</h3>
+    <p>Este proyecto explora el potencial de la biometría accesible como un recurso de apoyo en el ámbito de la salud. Al integrar la medición de pulso y temperatura, el sistema abre la posibilidad de desarrollar herramientas que ayuden a identificar patrones asociados a condiciones como el estrés postraumático o la ansiedad. Más que un dispositivo de medición, representa una aproximación hacia tecnologías que podrían facilitar el entendimiento de nuestras reacciones físicas, sirviendo como un paso adelante en la visualización de datos biológicos aplicados al bienestar emocional.</p>
+</div>
+    </div>
+</section>
+
+            <div class="super-cta-wrapper">
+    <div class="super-cta-box">
+        <p class="cta-text-v2">Si te llama la atención, lo encontrarás presionando el siguiente botón:</p>
+        <div class="button-wrapper">
+            <a href="Registro.html" class="btn-ultra-glow">¡Pruébalo ya!</a>
+        </div>
+    </div>
+</div>
+</div>
+        </section>
+
+        <section id="galeria">
+            <h1 class="galeria-header">Galería</h1>
+            <h3 style="color: var(--alegria); font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 2px;">EL DETECTOR DE EMOCIONES PUEDE DETECTAR:</h3>
+            
+            <div class="carrusel-wrapper">
+    <div class="carrusel-track" id="track1">
+        <div class="carrusel-item">
+            <img src="chicarelajadagif.gif" alt="Relajación">
+            <div class="carrusel-caption"><h3>ESTADO RELAJADO</h3><p>Calma detectada mediante homeostasis.</p></div>
+        </div>
+        <div class="carrusel-item">
+            <img src="alegregif.gif" alt="Alegría">
+            <div class="carrusel-caption"><h3>ESTADO ALEGRÍA</h3><p>Energía positiva registrada en biosensores.</p></div>
+        </div>
+        <div class="carrusel-item">
+            <img src="caraestresgif.gif" alt="Estrés">
+            <div class="carrusel-caption"><h3>ESTADO ESTRÉS</h3><p>Alerta sistémica por cortisol elevado.</p></div>
+        </div>
+    </div>
+</div>
+</section>
+        <section id="galeria">
+            <h3 style="color: var(--alegria); font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 2px;">ESTRUTURA DEL FUNCIONAMIENTO:</h3>
+            
+            <div class="carrusel-wrapper">
+    <div class="carrusel-track" id="track2">
+        <div class="carrusel-item">
+            <img src="imagen 1.jpeg" alt="Relajación">
+            <div class="carrusel-caption"><p>Funcionamiento.</p></div>
+        </div>
+        <div class="carrusel-item">
+            <img src="imagen 2.jpeg" alt="Alegría">
+            <div class="carrusel-caption"><p>Funcionamiento.</p></div>
+        </div>
+        <div class="carrusel-item">
+            <img src="imagen 3.jpeg" alt="Estrés">
+            <div class="carrusel-caption"><p>Funcionamiento.</p></div>
+        </div>
+    </div>
+</div>
+        </section>
+        <section id="Videos" class="video-seccion">
+    <h2 class="galeria-header">Videos del Proyecto</h2>
+    <div class="video-grid">
+        
+        <div id= class="video-item">
+            <div class="video-container">
+                <video controls poster="sensor .ai.png">
+                    <source src="VIdeo del final.mp4" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>
+            </div>
+            <p class="video-desc"><strong>Video tutorial:</strong> Funcionamiento de la página web.</p>
+        </div>
+
+        <div class="video-item">
+            <div class="video-container">
+                <video controls poster="sensor .ai.png">
+                    <source src="LECCION PRACTICA 3.4 PROYECTO INTEGRADOR DETECTOR DE EMOCIONES CON VISUALIZACIÓN WEB.mp4" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>
+            </div>
+            <p class="video-desc"><strong>Video tutorial:</strong> Tutorial de uso del detector de emociones.</p>
+        </div>
+
+        <div class="video-item">
+            <div class="video-container">
+                <video controls poster="sensor .ai.png">
+                    <source src="video.mp4" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>
+            </div>
+            <p class="video-desc"><strong>Video tutorial:</strong> Video del estudiante usando el sistema.</p>
+        </div>
+
+    </div>
+</section>
+    </main>
+
+<section id="comentarios" class="hero">
+    <h2 class="galeria-header">Comunidad Sensor .AI</h2>
+    <div class="comment-form-container">
+        <input type="text" id="userName" placeholder="Tu nombre..." class="comment-input">
+        <textarea id="commentText" placeholder="Escribe un comentario..." class="comment-input"></textarea>
+        <button onclick="agregarComentario()" class="btn-glow" style="padding: 15px 30px; font-size: 1rem; margin-top: 10px;">Publicar</button>
+    </div>
+
+    <div id="listaComentarios" class="comments-list">
+        </div>
+</section>
+    <footer>
+        <p>Desarrollado por el <strong>Grupo #1</strong></p>
+        <p style="opacity: 0.5; margin-top: 10px;">Diseño y Desarrollo Web | 2026</p>
+    </footer>
+
+<script>
+// 1. Configuración de conexión (Con tus datos reales de Sensor .AI)
+const SUPABASE_URL = 'https://ybriganqcqzmipieuyxg.supabase.co'; 
+const SUPABASE_KEY = 'sb_publishable_WBMj7poUMTJaIRVF1n8BlQ_EQsZmhja';
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// 2. Función para cargar comentarios desde la nube
+async function cargarComentarios() {
+    const { data, error } = await _supabase
+        .from('Comentarios') 
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error al cargar:", error.message);
+    } else {
+        const lista = document.getElementById('listaComentarios');
+        lista.innerHTML = data.map((c) => `
+            <div class="comment-card">
+                <h4>${c.nombre}</h4>
+                <p>${c.texto}</p>
+                <div class="reactions-container">
+                    <button class="reaction-btn" onclick="reaccionar(${c.id}, 'likes', ${c.likes})">👍 <span class="reaction-count">${c.likes}</span></button>
+                    <button class="reaction-btn" onclick="reaccionar(${c.id}, 'loves', ${c.loves})">❤️ <span class="reaction-count">${c.loves}</span></button>
+                    <button class="reaction-btn" onclick="reaccionar(${c.id}, 'hahas', ${c.hahas})">😂 <span class="reaction-count">${c.hahas}</span></button>
+                    <button class="reaction-btn" onclick="reaccionar(${c.id}, 'wows', ${c.wows})">😮 <span class="reaction-count">${c.wows}</span></button>
+                    
+                    <button class="btn-delete" onclick="borrarComentario(${c.id})">🗑️ Borrar</button>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// 3. Función para enviar un nuevo comentario
+async function agregarComentario() {
+    const nombre = document.getElementById('userName').value;
+    const texto = document.getElementById('commentText').value;
+
+    if (nombre.trim() && texto.trim()) {
+        const { error } = await _supabase
+            .from('Comentarios')
+            .insert([{ nombre, texto, likes: 0, loves: 0, hahas: 0, wows: 0 }]);
+
+        if (error) {
+            alert("No se pudo publicar. Revisa el RLS en Supabase.");
+        } else {
+            document.getElementById('userName').value = '';
+            document.getElementById('commentText').value = '';
+            cargarComentarios(); 
+        }
+    } else {
+        alert("No dejes campos vacíos.");
+    }
+}
+
+async function reaccionar(id, nuevaColumna, valorActual) {
+    // 1. Revisar si ya reaccionamos a este comentario antes (usamos localStorage para memoria local)
+    const llaveMemoria = `reaccion_${id}`;
+    const reaccionPrevia = localStorage.getItem(llaveMemoria);
+
+    // CASO A: Es el mismo emoji (quitar reacción)
+    if (reaccionPrevia === nuevaColumna) {
+        const { error } = await _supabase
+            .from('Comentarios')
+            .update({ [nuevaColumna]: valorActual - 1 })
+            .eq('id', id);
+
+        if (!error) {
+            localStorage.removeItem(llaveMemoria);
+            cargarComentarios();
+        }
+        return;
+    }
+
+    // CASO B: Ya había reaccionado a OTRO emoji (cambiar reacción)
+    if (reaccionPrevia && reaccionPrevia !== nuevaColumna) {
+        // Primero cargamos el comentario para saber cuántos puntos tiene la reacción vieja
+        const { data } = await _supabase.from('Comentarios').select('*').eq('id', id).single();
+        
+        // Restamos 1 al viejo y sumamos 1 al nuevo en una sola orden
+        const { error } = await _supabase
+            .from('Comentarios')
+            .update({ 
+                [reaccionPrevia]: Math.max(0, data[reaccionPrevia] - 1), 
+                [nuevaColumna]: data[nuevaColumna] + 1 
+            })
+            .eq('id', id);
+
+        if (!error) {
+            localStorage.setItem(llaveMemoria, nuevaColumna);
+            cargarComentarios();
+        }
+        return;
+    }
+
+    // CASO C: Primera vez que reacciona a este comentario
+    const { error } = await _supabase
+        .from('Comentarios')
+        .update({ [nuevaColumna]: valorActual + 1 })
+        .eq('id', id);
+
+    if (!error) {
+        localStorage.setItem(llaveMemoria, nuevaColumna);
+        cargarComentarios();
+    }
+}
+
+async function borrarComentario(id) {
+    const pass = prompt("Ingresa la clave de administrador para borrar:");
+    
+    if (pass !== null && pass.trim() === "conf_borrar") { 
+        console.log("Intentando borrar ID:", id); // Muestra en consola qué ID busca
+        
+        const { error } = await _supabase
+            .from('Comentarios')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            // ESTO ES CLAVE: Te dirá el mensaje técnico del error
+            alert("Error de Supabase: " + error.message + " | Código: " + error.code);
+            console.error(error);
+        } else {
+            alert("¡Comentario eliminado!");
+            cargarComentarios(); 
+        }
+    } else if (pass !== null) {
+        alert("Clave incorrecta. Intenta de nuevo.");
+    }
+}
+
+// Inicialización
+cargarComentarios();
+// Función maestra para los carruseles
+function activarCarrusel(idTrack) {
+    const track = document.getElementById(idTrack);
+    if (!track) return;
+
+    let index = 0;
+    const items = track.querySelectorAll('.carrusel-item');
+    const totalItems = items.length;
+
+    if (totalItems === 0) return;
+
+    setInterval(() => {
+        index++;
+        if (index >= totalItems) index = 0;
+
+        // CÁLCULO: Como el track es 300% y hay 3 items, movemos de 33.33% en 33.33%
+        const porcentajeMover = index * -(100 / totalItems); 
+        track.style.transform = `translateX(${porcentajeMover}%)`;
+    }, 4000); 
+}
+
+// Esperamos a que cargue el DOM para no tener errores
+document.addEventListener("DOMContentLoaded", function() {
+    // Si tienes la función de Supabase, descomenta la siguiente línea:
+    // if (typeof cargarComentarios === 'function') cargarComentarios();
+
+    activarCarrusel('track1'); 
+    activarCarrusel('track2'); 
+});
+</script>
+</body>
+</html>

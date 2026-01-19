@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor .AI | Monitor en Vivo</title>
+    
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #0f0c29;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --estres: #ff416c;
+            --relajado: #00f2fe;
+            --alegria: #f9d423;
+            --text: #ffffff;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: 90px; /* Altura para logo de 120px */
+        }
+
+        .logo-img { height: 120px; width: auto; transition: 0.3s; }
+
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { color: white; text-decoration: none; font-family: var(--font-heading); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; }
+
+        .container { padding: 40px 5%; display: flex; flex-direction: column; align-items: center; }
+
+        /* --- Monitor Central (Solo Pulso y Temp) --- */
+        .monitor-display { 
+            background: var(--glass); 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(15px); 
+            padding: 60px; 
+            border-radius: 50px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 100%; 
+            max-width: 700px;
+        }
+
+        .main-circle {
+            width: 260px; height: 260px; border-radius: 50%;
+            background: rgba(255,255,255,0.03); border: 4px solid var(--primary);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 0 50px rgba(0, 210, 255, 0.2);
+            margin-bottom: 40px; transition: 0.8s;
+        }
+
+        .emoji-live { font-size: 80px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; border: 1px solid var(--glass-border); text-align: center; }
+        .stat-box p { font-size: 0.8rem; font-weight: 700; color: var(--primary); letter-spacing: 2px; margin-bottom: 10px; }
+        .stat-val { font-size: 2.5rem; font-family: var(--font-heading); font-weight: 700; }
+
+        .floating-emoji { position: absolute; pointer-events: none; z-index: 100; animation: fly-up 2.5s ease-out forwards; }
+        @keyframes fly-up { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-350px) rotate(360deg) scale(1.5); opacity: 0; } }
+        #btnConectar {
+    margin-top: 20px;
+    padding: 12px 28px;
+    border-radius: 40px;
+    border: none;
+    font-family: var(--font-heading);
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 25px #00d2ff66;
+    transition: 0.3s;
+}
+
+#btnConectar:hover {
+    transform: scale(1.08);
+}
+
+    </style>
+
+</head>
+<body>
+
+    <header>
+        <a href="index.html">
+            <img src="sensor .ai.png" alt="Logo" class="logo-img">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="Detector.html">Inicio</a></li>
+                <li><a href="Registro.html">Nuevo Registro</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="monitor-display">
+            <h2 style="margin-bottom: 30px; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 3px; color: var(--primary);">Monitoreo en Tiempo Real</h2>
+            
+            <div id="circulo" class="main-circle">
+                <div id="emoji" class="emoji-live">🩺</div>
+                <h3 id="etiqueta" style="margin-top: 15px; font-size: 0.8rem; letter-spacing: 4px; color: var(--primary);">CONECTANDO...</h3>
+                <button id="btnConectar" onclick="conectarArduino()">
+    🔌 CONECTAR ARDUINO
+</button>
+
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box"><p>PULSO (BPM)</p><div class="stat-val" id="bpm">--</div></div>
+                <div class="stat-box"><p>TEMP (°C)</p><div class="stat-val"><span id="val-temp">--</span></div></div>
+            </div>
+        </div>
+    </main>
+
+<script>
+let port;
+let reader;
+let buffer = "";
+
+const circulo = document.getElementById('circulo');
+const emojiPrincipal = document.getElementById('emoji');
+const etiqueta = document.getElementById('etiqueta');
+
+// Estado inicial
+etiqueta.innerText = "ESPERANDO USUARIO...";
+etiqueta.style.color = "var(--primary)";
+
+async function conectarArduino() {
+    try {
+        etiqueta.innerText = "VINCULANDO...";
+        etiqueta.style.color = "var(--primary)";
+
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+
+        reader = port.readable.getReader();
+
+        etiqueta.innerText = "SISTEMA ACTIVO";
+        leerDatos();
+
+    } catch (error) {
+        etiqueta.innerText = "ERROR DE CONEXIÓN";
+        etiqueta.style.color = "red";
+        console.error(error);
+    }
+}
+
+async function leerDatos() {
+    const decoder = new TextDecoder();
+
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value);
+
+        if (buffer.includes("\n")) {
+            const lineas = buffer.split("\n");
+            buffer = lineas.pop();
+
+            lineas.forEach(linea => procesarLinea(linea.trim()));
+        }
+    }
+}
+
+function procesarLinea(linea) {
+    let partes = linea.split(";");
+
+    let bpm = null;
+    let temp = null;
+    let emocion = "NEUTRO";
+
+    partes.forEach(p => {
+        if (p.startsWith("LPM=")) bpm = parseInt(p.replace("LPM=", ""));
+        if (p.startsWith("TEMP=")) temp = parseFloat(p.replace("TEMP=", ""));
+        if (p.startsWith("EMOCION=")) emocion = p.replace("EMOCION=", "").toUpperCase();
+    });
+
+    if (isNaN(bpm) || isNaN(temp)) return;
+
+    document.getElementById('bpm').innerText = bpm;
+    document.getElementById('val-temp').innerText = temp.toFixed(1);
+
+    let color = "";
+    let icon = "";
+
+    switch (emocion) {
+        case "ESTRES":
+            color = "var(--estres)";
+            icon = "😡";
+            etiqueta.innerText = "ESTRÉS";
+            break;
+
+        case "ALEGRIA":
+            color = "var(--alegria)";
+            icon = "😊";
+            etiqueta.innerText = "ALEGRÍA";
+            break;
+
+        case "RELAJADO":
+            color = "var(--relajado)";
+            icon = "🧘";
+            etiqueta.innerText = "RELAJADO";
+            break;
+
+        default:
+            color = "var(--neutral)";
+            icon = "😐";
+            etiqueta.innerText = "NEUTRAL";
+    }
+
+    circulo.style.borderColor = color;
+    circulo.style.boxShadow = `0 0 50px ${color}66`;
+    emojiPrincipal.innerText = icon;
+    etiqueta.style.color = color;
+}
+</script>
+
+
+</body>
+</html>

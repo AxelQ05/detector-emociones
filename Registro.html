@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor .AI | Registro</title>
+    <link rel="icon" href='logo.png'type="image/png">
+    <link rel="stylesheet" href="Estilos.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+    <a href="Detector.html">
+        <img src='sensor .ai.png' alt="Sensor .AI Logo" class="logo-img">
+    </a>
+    <nav>
+        <ul>
+            <li><a href="Detector.html">Inicio</a></li>
+        </ul>
+        <div id="controles-historial" style="text-align: center; margin-top: 15px;">
+</div>
+    </nav>
+</header>
+
+    <section class="container">
+        <div class="registro-card">
+            <h2>Registro de Usuario</h2>
+            <p>Ingresa tus datos para iniciar la vinculación con Sensor .AI</p>
+            
+            <form id="form-registro">
+                <div class="input-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" placeholder="Ej. Andy Sosa" required>
+                </div>
+                
+                <div class="row">
+                    <div class="input-group">
+                        <label for="edad">Edad</label>
+                        <input type="number" id="edad" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="curso">Curso</label>
+                        <input type="text" id="curso" placeholder="Ej. 3ero BGU" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="fecha-hora">Fecha y Hora</label>
+                    <input type="datetime-local" id="fecha-hora" required>
+                </div>
+
+                <button type="submit" class="btn-glow">Empezar Monitoreo</button>
+            </form>
+        </div>
+
+        <div id="historial-global" class="history-card">
+            <h3>👥 Últimos Registros</h3>
+            <ul id="lista-global-usuarios"></ul>
+            
+            <div id="controles-historial">
+    <button id="btn-mostrar-mas" class="btn-toggle" style="display: none;" onclick="verMas()">
+        🔽 Ver todos los registros
+    </button>
+    <button id="btn-volver" class="btn-toggle" style="display: none;" onclick="volverAlInicio()">
+        ⬆️ Ocultar antiguos
+    </button>
+</div>
+
+            <button onclick="limpiarHistorial()" class="btn-borrar" style="margin-top: 20px;">🗑️ Limpiar Historial</button>
+        </div>  
+    </section>
+
+    <script src="Script.js"></script>
+</body>
+</html>
